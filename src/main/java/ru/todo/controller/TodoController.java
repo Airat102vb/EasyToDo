@@ -1,13 +1,14 @@
 package ru.todo.controller;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.todo.dao.TodoRepository;
 import ru.todo.dto.Greeting;
-
-import java.util.concurrent.atomic.AtomicLong;
+import ru.todo.dto.Todo;
 
 @RestController
 public class TodoController {
@@ -26,8 +27,8 @@ public class TodoController {
     return new Greeting(counter.incrementAndGet(), String.format(template, name));
   }
 
-  @GetMapping("/simple")
-  public String simple() {
-    return todoRepository.simpleQuery();
+  @GetMapping("/entry")
+  public List<Todo> getTodoEntries(@RequestParam(value = "userId") int userId) {
+    return todoRepository.getTodoEntriesById(userId);
   }
 }
