@@ -3,9 +3,7 @@ package ru.todo.controller;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.todo.dao.TodoRepository;
 import ru.todo.dto.Greeting;
 import ru.todo.dto.Todo;
@@ -30,5 +28,13 @@ public class TodoController {
   @GetMapping("/entry")
   public List<Todo> getTodoEntries(@RequestParam(value = "userId") int userId) {
     return todoRepository.getTodoEntriesById(userId);
+  }
+
+  @PutMapping("/entry/{userId}/todo/{todoId}")
+  public void updateTodoEntries(@PathVariable(value = "userId") long userId,
+                                @PathVariable(value = "todoId") long todoId,
+                                @RequestBody String text
+  ) {
+    todoRepository.updateTodoTodoByUserIdAndTodoId(userId, todoId, text);
   }
 }

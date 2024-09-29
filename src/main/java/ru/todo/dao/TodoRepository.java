@@ -44,7 +44,11 @@ public class TodoRepository {
     try {
       Connection connection = dataSource.getConnection();
       Statement statement = connection.createStatement();
-      String sql = "SELECT * from USERS u JOIN todo t on u.id = t.user_id WHERE user_id = %d".formatted(userId);
+      String sql = """
+                      SELECT t.id, u.full_name, u.login, t.entry from todo t
+                      JOIN users u on t.user_id = u.id
+                      WHERE user_id = %d
+                   """.formatted(userId);
       LOGGER.info("Выполняется запрос: '{};'", sql);
       ResultSet resultSet = statement.executeQuery(sql);
 
@@ -52,6 +56,7 @@ public class TodoRepository {
       while (resultSet.next()) {
         entries.add(
             new Todo(
+                resultSet.getString("id"),
                 resultSet.getString("full_name"),
                 resultSet.getString("login"),
                 resultSet.getString("entry")
@@ -59,6 +64,23 @@ public class TodoRepository {
         );
       }
       return entries;
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void updateTodoTodoByUserIdAndTodoId(long userId, long todoId, String text) {
+    try {
+      Connection connection = dataSource.getConnection();
+      Statement statement = connection.createStatement();
+      String sql = """
+                      UPDATE todo
+                      SET entry = '%s'
+                      WHERE user_id = %d
+                      AND id = %d;
+                   """.formatted(text, userId, todoId);
+      LOGGER.info("Выполняется запрос: '{};'", sql);
+      statement.executeUpdate(sql);
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
