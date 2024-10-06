@@ -1,67 +1,68 @@
 package ru.todo.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.todo.dto.TodoDTO;
+import org.springframework.stereotype.Repository;
+import ru.todo.dto.UserDTO;
 
-@Component
-public class TodoRepository {
+@Repository
+public class UserRepository {
 
   private static final Logger LOGGER = LoggerFactory.getLogger("TodoRepository");
   private DataSource dataSource;
 
-//  private JdbcTemplate jdbcTemplate;
-
   @Autowired
-  public TodoRepository (DataSource dataSource) {
+  public UserRepository(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
-  public List<TodoDTO> getTodoEntriesById(int userId) {
+  public List<UserDTO> getAllUsers() {
+    List<UserDTO> users = new LinkedList<>();
     try(Connection connection = dataSource.getConnection()) {
       Statement statement = connection.createStatement();
-      String sql = """
-                      SELECT t.id, u.full_name, u.login, t.entry from todo t
-                      JOIN users u on t.user_id = u.id
-                      WHERE user_id = %d
-                   """.formatted(userId);
+      String sql = "SELECT * FROM users";
       LOGGER.info("Выполняется запрос: \n{}", sql);
       ResultSet resultSet = statement.executeQuery(sql);
 
-      List<TodoDTO> entries = new LinkedList();
       while (resultSet.next()) {
-        entries.add(
-            new TodoDTO(
+        users.add(
+            new UserDTO(
                 resultSet.getString("id"),
                 resultSet.getString("full_name"),
-                resultSet.getString("login"),
-                resultSet.getString("entry")
+                resultSet.getString("login")
             )
         );
       }
-      return entries;
+      return users;
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
-  public void updateTodoTodoByUserIdAndTodoId(long userId, long todoId, String text) {
+  public UserDTO getUserById(long id) {
     try(Connection connection = dataSource.getConnection()) {
       Statement statement = connection.createStatement();
-      String sql = """
-                      UPDATE todo
-                      SET entry = '%s'
-                      WHERE user_id = %d
-                      AND id = %d;
-                   """.formatted(text, userId, todoId);
+      String sql = "SELECT * FROM users WHERE id = %d".formatted(id);
       LOGGER.info("Выполняется запрос: \n{}", sql);
-      statement.executeUpdate(sql);
+      ResultSet resultSet = statement.executeQuery(sql);
+
+      if (resultSet.next()) {
+        return new UserDTO(
+            resultSet.getString("id"),
+            resultSet.getString("full_name"),
+            resultSet.getString("login")
+        );
+      } else {
+        return null;
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

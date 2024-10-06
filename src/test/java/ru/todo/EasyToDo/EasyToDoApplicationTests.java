@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.todo.EasyToDo.config.TestDbConfig;
 import ru.todo.dao.TodoRepository;
-import ru.todo.dto.Todo;
+import ru.todo.dto.TodoDTO;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes={TestDbConfig.class})
@@ -25,18 +25,18 @@ class EasyToDoApplicationTests {
 
 	@Test
 	void getTest() {
-		List<Todo> todos = todoRepository.getTodoEntriesById(USER_ID);
-		assertEquals("Test text", todos.get(0).todo());
+		List<TodoDTO> todoDTOS = todoRepository.getTodoEntriesById(USER_ID);
+		assertEquals("Test text", todoDTOS.get(0).todo());
 	}
 
 	@Test
 	@DirtiesContext
 	void updateTest() {
 		String randomEntryText = getRandomString();
-		List<Todo> todos = todoRepository.getTodoEntriesById(USER_ID);
+		List<TodoDTO> todoDTOS = todoRepository.getTodoEntriesById(USER_ID);
 
-		todoRepository.updateTodoTodoByUserIdAndTodoId(USER_ID, Integer.parseInt(todos.get(0).id()), randomEntryText);
-		todos = todoRepository.getTodoEntriesById(USER_ID);
-		assertEquals(randomEntryText, todos.get(0).todo());
+		todoRepository.updateTodoTodoByUserIdAndTodoId(USER_ID, Integer.parseInt(todoDTOS.get(0).id()), randomEntryText);
+		todoDTOS = todoRepository.getTodoEntriesById(USER_ID);
+		assertEquals(randomEntryText, todoDTOS.get(0).todo());
 	}
 }
