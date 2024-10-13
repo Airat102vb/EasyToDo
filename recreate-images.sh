@@ -5,6 +5,11 @@
 
 CONTAINER_NAME=so-easy
 IMAGE_NAME=easy
+APP_PROFILE="${1:-dev}"
+
+mvn clean package && echo -e " --------------------------
+| Сборка завершена успешно |
+ --------------------------"
 
 # Удаление существующего контейнера
 if [ "$(sudo docker ps -q -f name=$CONTAINER_NAME)" ]; then
@@ -28,8 +33,8 @@ echo "Удаление образа '$IMAGE_NAME'" && sudo docker rmi -f $IMAGE_
 
 #Создание нового образа
 echo "Создание нового образа '$IMAGE_NAME'"
-sudo docker build -t $IMAGE_NAME .
+sudo docker build --build-arg profile=$APP_PROFILE -t $IMAGE_NAME .
 
 #Запуск контейнера
-echo "Запуск контейнера '$CONTAINER_NAME' из образа '$IMAGE_NAME'"
+echo "Запуск контейнера '$CONTAINER_NAME' из образа '$IMAGE_NAME' с профилем $APP_PROFILE"
 sudo docker run -d --name $CONTAINER_NAME --network mycustomnetwork -p 8088:8088 $IMAGE_NAME
