@@ -8,6 +8,6 @@ Steps to Start a Project.
 - Common network for application and postgress containers (if third launch option preferred, in docker containers)
 
 launch variants:
-1. In IDE with --spring.profiles.active=local programm argument
-2. As jar file. mvn clean package && java -jar -Dspring.profiles.active=local <your jar-file name>.jar
-3. recreate-images.sh - bash script will compile an jar file, then build image and start application in docker container, with "dev" profile, that enables application to connect to postgres db in docker container
+1. In IDE with `--spring.profiles.active=local` programm argument
+2. As jar file. `mvn clean package` && `java -jar -Dspring.profiles.active=local <your jar-file name>.jar`
+3. `recreate-images.sh` - bash script will compile an jar file, then build image and start application in docker container, with "dev" profile, that enables application to connect to postgres db in docker container
