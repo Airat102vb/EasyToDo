@@ -37,4 +37,4 @@ sudo docker build --build-arg profile=$APP_PROFILE -t $IMAGE_NAME .
 
 #Запуск контейнера
 echo "Запуск контейнера '$CONTAINER_NAME' из образа '$IMAGE_NAME' с профилем $APP_PROFILE"
-sudo docker run -d --name $CONTAINER_NAME --network mycustomnetwork -p 8088:8088 $IMAGE_NAME
+sudo docker compose -f ./easy-compose.yml up -d

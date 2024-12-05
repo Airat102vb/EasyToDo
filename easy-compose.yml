@@ -1,0 +1,12 @@
+services:
+  todo-service:
+    image: easy
+    container_name: so-easy
+    ports:
+      - 8088:8088
+    networks:
+      - "mycustomnetwork"
+
+networks:
+  mycustomnetwork:
+    external: true
